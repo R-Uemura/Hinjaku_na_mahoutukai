@@ -1,0 +1,104 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &5681698621355525597
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 5681698621355525595}
+  - component: {fileID: 5681698621355525596}
+  - component: {fileID: 5681698621355525594}
+  m_Layer: 0
+  m_Name: GameManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &5681698621355525595
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5681698621355525597}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &5681698621355525596
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5681698621355525597}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 61e5df901e72fc041b6e7e7d03d166c1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  colums: 12
+  rows: 12
+  floorTiles:
+  - {fileID: 8815483829855092915, guid: 33f6e6a7a19c89a429b5da972283d636, type: 3}
+  - {fileID: 6157985738765062727, guid: a725bbf7b665c07469b3b058dcc7340a, type: 3}
+  - {fileID: 5123972869590921935, guid: 3c9147e6cd65bf34c82bc38c5e3c4531, type: 3}
+  - {fileID: 4841910026832315733, guid: 996c4dcdce71a874a82b601b7575d478, type: 3}
+  - {fileID: 7909317018809443177, guid: 5533bb0da2477c441bc8283a69f4dd0f, type: 3}
+  blockObj:
+  - {fileID: 2705267624141806968, guid: fcbceb5b96155844a88ba15ad91d9714, type: 3}
+  - {fileID: 1920070760785092924, guid: bb135cf8a6983c94abef5861ec7db581, type: 3}
+  - {fileID: 6150235346590678467, guid: 5e92bfce2c187cc4794210817c50bc4c, type: 3}
+  - {fileID: 8804742648342386643, guid: 5ff43fd094a89ce48befc3084d248c1a, type: 3}
+  itemObj:
+  - {fileID: 7511762443650330847, guid: 6c8d9d4af0f807042b2e70bdeed70867, type: 3}
+  - {fileID: 2329308283176220533, guid: 752a9dcfb2ecab945a090773b805e47f, type: 3}
+  - {fileID: 7405704613728889968, guid: 1561537c705ca2a4aa2d19dcdab9ec69, type: 3}
+  - {fileID: 944544514522620289, guid: 88c794219de2aee44a57f54b3dcb1343, type: 3}
+  - {fileID: 2810657467112473858, guid: d8b1461f6dc2f4b4d8c40f5f6c13f2e4, type: 3}
+  enemyObj:
+  - {fileID: 7765738252101732294, guid: 86182256aa3688b48b2cd8706ab3a2cc, type: 3}
+  - {fileID: 8821190090098558163, guid: 93717e147f3e04244bca7cd3f9c6453f, type: 3}
+  - {fileID: 4471290007870457838, guid: bdfe40c0f35b2554a94cce93e906b737, type: 3}
+  - {fileID: 6380398372867463203, guid: a1a81d1b528864e4681a82fc384074f6, type: 3}
+  - {fileID: 3452631126863339235, guid: 7ddb706556e72474fb6e84735f909eeb, type: 3}
+  - {fileID: 435417732239929643, guid: 83ec8a92237c10c45a2acd35dc71a310, type: 3}
+  - {fileID: 1015577781671480722, guid: d1b7c178db34adc408a9e71c2b81823b, type: 3}
+  - {fileID: 592116450802320869, guid: c33978334b5b9cb4b9a2461a6bc9b1fb, type: 3}
+  goalobj: {fileID: 2477554685533286481, guid: 0b35d04e0f031d64f8d71e23e54632f6, type: 3}
+  blockMinimun: 1
+  blockMaximum: 4
+  itemMinimun: 3
+  itemMaximum: 6
+--- !u!114 &5681698621355525594
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5681698621355525597}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6b2c57aea2a8bf44d8414cb4d1c39ba0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  depth: 1
+  depthText: {fileID: 0}
+  depthImage: {fileID: 0}
+  playerlv: 1
+  stamina: 100
+  hp: 50
+  maxHP: 50
+  hpr: 5
+  strength: 3
+  magic: 12
+  getExp: 0
+  score: 0
+  life: 1
