@@ -13,5 +13,5 @@ MonoBehaviour:
   m_Name: Card6
   m_EditorClassIdentifier: 
   ap: 6
-  stamina: 4
-  hpr: -3
+  stamina: 5
+  hpr: -1

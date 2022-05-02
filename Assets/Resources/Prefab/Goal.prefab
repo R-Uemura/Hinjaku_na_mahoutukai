@@ -1,24 +1,5 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!95 &924800355209392487
-Animator:
-  serializedVersion: 3
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 805536805022783740}
-  m_Enabled: 1
-  m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: 6e6e59f4485e8f14984eb66639fd3500, type: 2}
-  m_CullingMode: 0
-  m_UpdateMode: 0
-  m_ApplyRootMotion: 0
-  m_LinearVelocityBlending: 0
-  m_WarningMessage: 
-  m_HasTransformHierarchy: 1
-  m_AllowConstantClipSamplingOptimization: 1
-  m_KeepAnimatorControllerStateOnDisable: 0
 --- !u!1 &2477554685390583834
 GameObject:
   m_ObjectHideFlags: 0
@@ -4779,7 +4760,7 @@ ParticleSystemRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 10308, guid: 0000000000000000f000000000000000, type: 0}
+  - {fileID: 2100000, guid: 995a603edbc24a34296de51fbfd555c5, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -4834,10 +4815,12 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2477554685533286480}
-  - component: {fileID: 2477554685533286483}
+  - component: {fileID: 6990000256526647980}
+  - component: {fileID: 2915666454397064862}
+  - component: {fileID: 8822982431571625769}
   m_Layer: 15
   m_Name: Goal
-  m_TagString: Goal
+  m_TagString: Blocking
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -4853,13 +4836,13 @@ Transform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
-  - {fileID: 28719073367065158}
+  - {fileID: 5027556037201022993}
   - {fileID: 2477554685390583837}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!135 &2477554685533286483
-SphereCollider:
+--- !u!65 &6990000256526647980
+BoxCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -4869,9 +4852,40 @@ SphereCollider:
   m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
-  m_Radius: 0.25
+  m_Size: {x: 0.85, y: 0.85, z: 0.85}
   m_Center: {x: 0, y: 0, z: 0}
---- !u!1001 &571040869334902189
+--- !u!114 &2915666454397064862
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2477554685533286481}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4479be3b9dcbd9c408b9e83f5db85ca4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!95 &8822982431571625769
+Animator:
+  serializedVersion: 3
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2477554685533286481}
+  m_Enabled: 1
+  m_Avatar: {fileID: 9000000, guid: 1101765990ad0974082985e247307bc1, type: 3}
+  m_Controller: {fileID: 9100000, guid: 9ffeb37aba0a10141bfae5d5c3a84686, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorControllerStateOnDisable: 0
+--- !u!1001 &4778265231312926714
 PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
@@ -4926,15 +4940,18 @@ PrefabInstance:
       propertyPath: m_Name
       value: Door
       objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 1101765990ad0974082985e247307bc1, type: 3}
+      propertyPath: m_TagString
+      value: Untagged
+      objectReference: {fileID: 0}
+    - target: {fileID: 5866666021909216657, guid: 1101765990ad0974082985e247307bc1, type: 3}
+      propertyPath: m_Controller
+      value: 
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 1101765990ad0974082985e247307bc1, type: 3}
---- !u!1 &805536805022783740 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: 1101765990ad0974082985e247307bc1, type: 3}
-  m_PrefabInstance: {fileID: 571040869334902189}
-  m_PrefabAsset: {fileID: 0}
---- !u!4 &28719073367065158 stripped
+--- !u!4 &5027556037201022993 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 1101765990ad0974082985e247307bc1, type: 3}
-  m_PrefabInstance: {fileID: 571040869334902189}
+  m_PrefabInstance: {fileID: 4778265231312926714}
   m_PrefabAsset: {fileID: 0}

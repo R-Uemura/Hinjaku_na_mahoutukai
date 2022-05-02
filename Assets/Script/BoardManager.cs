@@ -15,7 +15,7 @@ public class BoardManager : MonoBehaviour
     private List<Vector3> gridPositons = new List<Vector3>(); // 全オブジェクトの座標リスト
 
     public int blockMinimun = 1, blockMaximum = 4; // 障害物の数
-    public int itemMinimun = 1, itemMaximum = 7; // アイテムの数
+    public int itemMinimun = 4, itemMaximum = 7; // アイテムの数
 
     // フロアの自動生成の処理
     void BoardSetup()
@@ -80,11 +80,13 @@ public class BoardManager : MonoBehaviour
 
         int enemyCountRd = 2 + (int)Mathf.Log(depth, 2f);
 
-        // enemyの出現数を5にする
+        // enemyの最大出現数を5にする
         if(enemyCountRd > 5)
         {
             enemyCountRd = 5;
         }
+
+        GameManager.instance.totalEnemy = enemyCountRd;
 
         LayoutoEnemyRandom(enemyObj, enemyCountRd, enemyCountRd ,depth); // エネミーの生成
 
@@ -97,6 +99,7 @@ public class BoardManager : MonoBehaviour
     void LayoutoEnemyRandom(GameObject[] objArray, int min, int max , int stageLV)
     {
         int objectCount = Random.Range(min, max + 1); // オブジェクト生成する数の決定
+
 
         for (int i = 0; i < objectCount; i++)
         {

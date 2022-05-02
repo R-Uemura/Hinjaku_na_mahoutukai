@@ -16,6 +16,7 @@ public class Player : MonoBehaviour
 
     AttackController attackController;
     UIManager uiManager;
+    MessageTextManager messageTextManager;
 
     // ターンコントロール変数
     public int phasecount;
@@ -24,6 +25,7 @@ public class Player : MonoBehaviour
     public bool isActionturn = false;
 
     // 移動関係変数
+    bool buttonHold = false;
     bool isMoving = false;
     bool isDirection = false;
     public Text moveText;
@@ -47,19 +49,23 @@ public class Player : MonoBehaviour
     public int hpr;
     public int strength;
     public int magic;
-    public int getExp;
-    public int score;
+    public int nextExp;
     public bool life = true;
 
     // AP
     public int ap = 0;
 
     // バトル制御変数
+    public int power;
     float dmg;
     float attackTimer;
+    float attackStartTimer;
+    bool attackStart = false;
     float delayTime;
     float damageResetTime = 0.3f;
     float hitTimer = 0f;
+    bool charge = false;
+    int dmgBonus = 0;
 
 
     void Start()
@@ -68,6 +74,8 @@ public class Player : MonoBehaviour
         animator = GetComponent<Animator>(); // アニメーターの取得
         directionText.enabled = false; // direction表記を消す
         moveText.enabled = true; // moveを表示
+
+        messageTextManager = this.GetComponent<MessageTextManager>();
 
         phasecount = 0;
 
@@ -79,8 +87,7 @@ public class Player : MonoBehaviour
         stamina = GameManager.instance.stamina;
         strength =  GameManager.instance.strength;
         magic = GameManager.instance.magic;
-        getExp = GameManager.instance.getExp;
-        score = GameManager.instance.score;
+        nextExp = GameManager.instance.nextExp;
         life = GameManager.instance.life;
 
         for (int i = 0; i < 6; i++)
@@ -89,6 +96,7 @@ public class Player : MonoBehaviour
         }
 
         StartGame();
+        buttonHold = false;
         isCardDraw = true;
         isCardSelect = false;
         isActionturn = false;
@@ -135,8 +143,6 @@ public class Player : MonoBehaviour
             // 移動処理
             if (isMoving)
             {
-                animator.SetBool("Walk", true); // 移動アニメ開始
-
                 Vector3 mpos = new Vector3(0, 0, moveSpeed); // 移動量
                 this.transform.Translate(mpos); // 移動
                 counter++; // 移動回数
@@ -146,23 +152,77 @@ public class Player : MonoBehaviour
                     //　移動終了
                     this.transform.position = targetPosition; // 座標のずれをグローバル座標で上書き
                     counter = 0;
-                    animator.SetBool("Walk", false);
                     ap--;
                     uiManager.APTextUpdate();
-                    SkillChange(ap);
-
+                    
                     //　スタミナが0のとき歩く度にダメージ
                     if(stamina < 1)
                     {
                         hp--;
+
+                        if (hp < 1)
+                        {
+                            hp = 1;
+                        }
+
                         uiManager.HPTextUpdate();
-                    }else if(stamina > 0)
+                    }
+                    else if(stamina > 0)
                     {
                         stamina--;
                         uiManager.StaminaTextUpdate();
                     }
 
-                    isMoving = false;
+                    // チャージ殴りボーナス
+                    if (charge)
+                    {
+                        dmgBonus++;
+
+                        if (dmgBonus > 6)
+                        {
+                            dmgBonus = 6;
+                        }
+                    }
+
+                    SkillChange(ap);
+
+                    // 移動ボタンを押したままの処理
+                    if (buttonHold)
+                    {
+                        if (MoveCheck() && ap > 0)
+                        {
+                            isMoving = true;
+
+                            // 向いている方向に合わせて移動先を設定
+                            switch (transform.localEulerAngles.y)
+                            {
+                                case 0f:
+                                    targetPosition = this.transform.position + new Vector3(0, 0, 1.0f);
+                                    break;
+                                case 90f:
+                                    targetPosition = this.transform.position + new Vector3(1.0f, 0, 0);
+                                    break;
+                                case 180f:
+                                    targetPosition = this.transform.position + new Vector3(0, 0, -1.0f);
+                                    break;
+                                case 270f:
+                                    targetPosition = this.transform.position + new Vector3(-1.0f, 0, 0);
+                                    break;
+                                default:
+                                    break;
+                            }
+                        }
+                        else
+                        {
+                            animator.SetBool("Walk", false);
+                            isMoving = false;
+                        }
+                    }
+                    else
+                    {
+                        animator.SetBool("Walk", false);
+                        isMoving = false;
+                    }
                 }
             }
 
@@ -177,6 +237,11 @@ public class Player : MonoBehaviour
                 else
                 {
                     AttackTriggerOFF();
+                }
+
+                if(attackStartTimer < attackTimer && !attackStart)
+                {
+                    AttackStart();
                 }
 
                 if (damageResetTime < attackTimer)
@@ -224,23 +289,23 @@ public class Player : MonoBehaviour
         // 撃破されたあとの処理
         if (isDown)
         {
-            
+            GameManager.instance.PlayerDown();
         }
 
         // LvUP処理
-        if(getExp > 100)
+        if(nextExp < 1)
         {
-            getExp = 0;
 
             lv++;
-            maxHP += 5;
+            maxHP += 4;
             hpr++;
             strength++;
-            magic += 5;
+            magic += 3;
 
-            score += lv;
-
+            messageTextManager.OpenLevelUPText();
             uiManager.LevelTextUpdate();
+
+            nextExp = 10 + ( 100 * ( lv / 10)) + lv;
         }
     }
 
@@ -281,8 +346,11 @@ public class Player : MonoBehaviour
                     targetPosition = this.transform.position + new Vector3(0, 0, 1.0f); // グローバル座標で最終移動先座標を記録
                 }
             }
+
+            buttonHold = true;
         }
     }
+
 
     //　下ボタン押したとき
     public void InputDown()
@@ -298,6 +366,8 @@ public class Player : MonoBehaviour
                     targetPosition = this.transform.position + new Vector3(0, 0, -1.0f); // グローバル座標で最終移動先座標を記録
                 }
             }
+
+            buttonHold = true;
         }
     }
 
@@ -315,6 +385,8 @@ public class Player : MonoBehaviour
                     targetPosition = this.transform.position + new Vector3(1.0f, 0, 0); // グローバル座標で最終移動先座標を記録
                 }
             }
+
+            buttonHold = true;
         }
     }
 
@@ -332,7 +404,15 @@ public class Player : MonoBehaviour
                     targetPosition = this.transform.position + new Vector3(-1.0f, 0, 0); // グローバル座標で最終移動先座標を記録
                 }
             }
+
+            buttonHold = true;
         }
+    }
+
+    //　移動ボタンを離したとき
+    public void ButtonOff()
+    {
+        buttonHold = false;
     }
 
     // 移動可否判定
@@ -357,6 +437,8 @@ public class Player : MonoBehaviour
                 return false;
             }
         }
+
+        animator.SetBool("Walk", true); // 移動アニメ開始
         return true;
     }
 
@@ -372,7 +454,14 @@ public class Player : MonoBehaviour
             hpr += itemManager.hpr;
             strength += itemManager.strength;
             magic += itemManager.magic;
-            getExp += itemManager.getExp;
+            ap += itemManager.ap;
+
+            messageTextManager.OpenItemText(itemManager.itemName);
+
+            if (!charge)
+            {
+                charge = itemManager.charge;
+            }
 
             if(stamina > 100)
             {
@@ -380,7 +469,7 @@ public class Player : MonoBehaviour
             }
 
             uiManager.GetItem();
-
+            uiManager.ChargePanelChenge(charge);
             other.gameObject.SetActive(false);
         }
         else if (other.tag == "Goal")
@@ -402,15 +491,16 @@ public class Player : MonoBehaviour
         GameManager.instance.stamina = stamina;
         GameManager.instance.strength = strength;
         GameManager.instance.magic = magic;
-        GameManager.instance.getExp = getExp;
-        GameManager.instance.score = score;
+        GameManager.instance.nextExp = nextExp;
         GameManager.instance.life = life;
     }
 
     // 次のステージへの遷移関数
     public void Restart()
     {
-        SceneManager.LoadScene(0);
+        GameManager.instance.nowGame = true;
+        GameManager.instance.depth++;
+        SceneManager.LoadScene("MainGame");
     }
 
     // カード生成関数
@@ -434,46 +524,155 @@ public class Player : MonoBehaviour
             {
                 skillObject[i].gameObject.SetActive(false);
             }
-            uiManager.ActionTextUpdate(ap);
+
+            switch (ap)
+            {
+                case 1:
+                    if (charge)
+                    {
+                        switch (dmgBonus)
+                        {
+                            case 1:
+                                dmg = strength + magic;
+                                break;
+                            case 2:
+                                dmg = strength * 1.03f + magic;
+                                break;
+                            case 3:
+                                dmg = strength * 1.07f + magic;
+                                break;
+                            case 4:
+                                dmg = strength * 1.15f + magic;
+                                break;
+                            case 5:
+                                dmg = (strength + magic) * 1.2f;
+                                break;
+                            case 6:
+                                dmg = (strength * 2 + magic) * 1.25f;
+                                break;
+                            default:
+                                dmg = strength + magic;
+                                break;
+                        }
+                    }
+                    else
+                    {
+                        dmg = strength;
+                    }
+                    break;
+                case 2:
+
+                    if (charge)
+                    {
+                        dmg = magic + magic;
+                    }
+                    else
+                    {
+                        dmg = magic;
+                    }
+                    break;
+                case 3:
+                    dmg = 0;
+                    break;
+                case 4:
+                    if (charge)
+                    {
+                        dmg = magic * 1.03f + magic;
+                    }
+                    else
+                    {
+                        dmg = magic * 1.03f;
+                    }
+                    break;
+                case 5:
+                    if (charge)
+                    {
+                        dmg = (magic + strength * 0.1f) * 1.05f + magic;
+                    }
+                    else
+                    {
+                        dmg = (magic + strength * 0.1f) * 1.05f;
+                    }
+                    break;
+                case 6:
+                    if (charge)
+                    {
+                        dmg = magic * 1.12f + magic;
+                    }
+                    else
+                    {
+                        dmg = magic * 1.12f;
+                    }
+                    break;
+                default:
+                    dmg = 0;
+                    break;
+            }
+            uiManager.ActionTextUpdate(ap, (int)dmg, dmgBonus);
         }
     }
 
-    // 画面右のボタンを押したとき
+    // アクションボタンを押したとき
     public void ActionTap()
     {
-        if(!isAttack && !isMoving && ap > 0)
+        if(!isAttack && !isMoving)
         {
             switch (ap)
             {
                 case 1:
                     animator.SetTrigger("Skill1");
-                    dmg = strength;
-                    AttackTriggerON(dmg);
+                    delayTime = 1.8f;
+                    attackStartTimer = 0.0f;
+                    damageResetTime = 0.3f;
+
+                    charge = false;
+                    AttackTriggerON();
+
+                    if (dmgBonus > 4)
+                    {
+                        strength += 2;
+                    }
+
                     break;
                 case 2:
                     animator.SetTrigger("Skill2");
-                    dmg = magic;
-                    AttackTriggerON(dmg);
+                    delayTime = 1.8f;
+                    attackStartTimer = 0.2f;
+                    damageResetTime = attackStartTimer + 0.3f;
+                    charge = false;
+                    AttackTriggerON();
                     break;
                 case 3:
                     animator.SetTrigger("Skill3");
-                    dmg = 0;
-                    AttackTriggerON(dmg);
+                    delayTime = 1.8f;
+                    attackStartTimer = 0.0f;
+                    damageResetTime = attackStartTimer + 0.3f;
+                    charge = true;
+                    AttackTriggerON();
                     break;
                 case 4:
                     animator.SetTrigger("Skill4");
-                    dmg = magic * 1.08f;
-                    AttackTriggerON(dmg);
+                    delayTime = 1.8f;
+                    attackStartTimer = 0.2f;
+                    damageResetTime = attackStartTimer + 0.3f;
+                    charge = false;
+                    AttackTriggerON();
                     break;
                 case 5:
                     animator.SetTrigger("Skill5");
-                    dmg = (magic + strength * 0.80f) * 1.12f;
-                    AttackTriggerON(dmg);
+                    delayTime = 2.0f;
+                    attackStartTimer = 0.3f;
+                    damageResetTime = attackStartTimer + 0.3f;
+                    charge = false;
+                    AttackTriggerON();
                     break;
                 case 6:
                     animator.SetTrigger("Skill6");
-                    dmg = magic * 1.40f;
-                    AttackTriggerON(dmg);
+                    delayTime = 2.5f;
+                    attackStartTimer = 0.5f;
+                    damageResetTime = attackStartTimer + 0.3f;
+                    charge = false;
+                    AttackTriggerON();
                     break;
                 default:
                     break;
@@ -481,20 +680,26 @@ public class Player : MonoBehaviour
         }
     }
 
-    private void AttackTriggerON(float dmg)
+    private void AttackTriggerON()
     {
         attackController = skillObject[ap - 1].GetComponent<AttackController>();
-        attackController.Damager((int)dmg);
         isAttack = true;
+        attackStart = false;
         attackTimer = 0;
-        delayTime = 1.2f;
+        dmgBonus = 0;
+        uiManager.ChargePanelChenge(charge);
+        attackController.PlayerEffecktPlay();
     }
 
+    private void AttackStart()
+    {
+        attackController.PlayerAttack((int)dmg);
+        attackStart = true;
+    }
 
     private void AttackTriggerOFF()
     {
         skillObject[ap - 1].gameObject.SetActive(false);
-
         ap = 0;
         isAttack = false;
         isMoving = false;
@@ -524,5 +729,25 @@ public class Player : MonoBehaviour
                 }
             }
         }
+    }
+
+    // 復活
+    public void PlayerRevival()
+    {
+        life = false;
+
+        hp = maxHP;
+        hpr += lv;
+        charge = false;
+
+        stamina += 30;
+        if(stamina > 100)
+        {
+            stamina = 100;
+        }
+
+        isDown = false;
+        animator.SetBool("Down", false);
+        messageTextManager.OnRevival();
     }
 }

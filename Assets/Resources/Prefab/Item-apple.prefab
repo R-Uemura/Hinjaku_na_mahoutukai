@@ -77,12 +77,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2e772d5526ce76d40b45b039b75c8536, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  stamina: 35
-  maxhp: 1
-  hpr: 3
+  itemName: "\u308A\u3093\u3054"
+  stamina: 30
+  maxhp: 0
+  hpr: 2
   strength: 0
-  magic: 1
-  getExp: 5
+  magic: 0
+  ap: 0
+  charge: 0
 --- !u!1001 &7511762444259590060
 PrefabInstance:
   m_ObjectHideFlags: 0

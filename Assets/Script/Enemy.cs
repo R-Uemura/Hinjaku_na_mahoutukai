@@ -12,11 +12,12 @@ public class Enemy : MonoBehaviour
     bool isMoving = false;
     public float moveSpeed = 0.1f; // 移動スピード
     int counter = 0; // 移動回数カウンター
-    Vector3 targetPosition; // 移動完了座標格納用
+    public Vector3 targetPosition; // 移動完了座標格納用
 
     private Transform playerPosition;
     public GameObject enemyAttackRange;
     AttackController attackController;
+    EnemyHPtext enemyHPtext;
 
     // ゲームステータス
     public string EnemyName = "";
@@ -26,20 +27,27 @@ public class Enemy : MonoBehaviour
     public int hprattack = 0;
     public int maxActionCount = 1;
     public int acquiredExp = 10;
-    public int acquiredScore = 3;
     private int actionCount = 0;
 
-    // レベルによるステータス上昇値
-    public int hpRiseValue = 5;
-    public int attackRiseValue = 1;
-    public float hprattackRiseValue = 0.1f;
+    // レベルによるステータス上昇値(+付き)
+    public int boostflag = 10;
+    public int boostHpRiseValue = 5;
+    public int boostAttackRiseValue = 3;
+    public float boostHprattackRiseValue = 0.1f;
 
-    // ハイレベルアップ時のステータス上昇
-    public int deepflag = 25;
+    // ハイレベルアップ時のステータス上昇(☆付き)
+    public int hiLevelflag = 25;
+    public int hiLevelhp = 100;
+    public int hiLevelattack = 5;
+    public int hiLevelhprattack = 30;
+    public int hiLevelmaxActionCount = 1;
+    public int hiLevelacquiredExp = 20;
+
+    // ハイレベルアップ時のステータス上昇(★付き)
+    public int deepflag = 50;
     public int deephp = 100;
     public int deepattack = 5;
-    public int deephprattack = 30;
-    public int deepmaxActionCount = 1;
+    public float deephprattack = 5.0f;
 
     // ターン制御変数
     bool isAttack = false;
@@ -59,7 +67,7 @@ public class Enemy : MonoBehaviour
     float damageResetTime = 0.3f;
     float attckCheckTimer = 0;
     int dmg;
-
+    
 
     void Start()
     {
@@ -77,6 +85,9 @@ public class Enemy : MonoBehaviour
         int stage = GameManager.instance.depth;
 
         EnemyLvUP(stage);
+
+        enemyHPtext = this.gameObject.GetComponent<EnemyHPtext>();
+        enemyHPtext.GetEnemyMaxHP(hp);
 
         turnEnd = true;
     }
@@ -101,7 +112,6 @@ public class Enemy : MonoBehaviour
                 this.transform.position = targetPosition; // 座標のずれをグローバル座標で上書き
                 counter = 0;
                 isMoving = false;
-                // animator.SetBool("Walk", false);
                 actionCount--;
 
                 TurnCheck();
@@ -160,15 +170,17 @@ public class Enemy : MonoBehaviour
                     isHit = false;
                     boxCollider.enabled = false; // 判定を消し、移動の邪魔にならなくする
 
+                    enemyHPtext.EnemyHPtexthide();
                     EnemyName = "";
 
-                    player.getExp += acquiredExp;
-                    player.score += acquiredScore;
+                    player.nextExp -= acquiredExp;
+                    GameManager.instance.totalEnemy--;
                 }
                 else
                 {
                     animator.SetTrigger("Hit");
                     isHit = false;
+                    enemyHPtext.EnemyHPtextUpdate(hp);
                 }
             }
             else
@@ -228,10 +240,6 @@ public class Enemy : MonoBehaviour
                 {
                     UPmove();
                 }
-                else if (playerPosition.position.z - transform.position.z < 0)
-                {
-                    Downmove();
-                }
                 else if (playerPosition.position.x - transform.position.x > 0)
                 {
                     Rightmove();
@@ -240,6 +248,11 @@ public class Enemy : MonoBehaviour
                 {
                     Leftmove();
                 }
+                else if (playerPosition.position.z - transform.position.z < 0)
+                {
+                    Downmove();
+                }
+
             }
         }
 
@@ -250,19 +263,23 @@ public class Enemy : MonoBehaviour
     {
         if (playerPosition.position.z - transform.position.z > 0)
         {
+            // 上向き
             transform.rotation = Quaternion.Euler(new Vector3(0, 0, 0));
-        }
-        else if (playerPosition.position.z - transform.position.z < 0)
-        {
-            transform.rotation = Quaternion.Euler(new Vector3(0, 180f, 0));
         }
         else if (playerPosition.position.x - transform.position.x > 0)
         {
+            // 右向き
             transform.rotation = Quaternion.Euler(new Vector3(0, 90f, 0));
         }
         else if (playerPosition.position.x - transform.position.x < 0)
         {
+            // 左向き
             transform.rotation = Quaternion.Euler(new Vector3(0, 270f, 0));
+        }
+        else if (playerPosition.position.z - transform.position.z < 0)
+        {
+            // 下向き
+            transform.rotation = Quaternion.Euler(new Vector3(0, 180f, 0));
         }
     }
 
@@ -273,13 +290,27 @@ public class Enemy : MonoBehaviour
         isMoving = MoveCheck();
         if (!isMoving)
         {
-            transform.rotation = Quaternion.Euler(new Vector3(0, 270f, 0));
-            isMoving = MoveCheck();
-            if (isMoving)
+            if (playerPosition.position.z - transform.position.z < 0)
             {
+                // 下向き
+                transform.rotation = Quaternion.Euler(new Vector3(0, 180f, 0));
+                targetPosition = this.transform.position + new Vector3(0, 0, -1.0f);
+            }
+            else if (playerPosition.position.x - transform.position.x >= 0)
+            {
+                // 右向き
+                transform.rotation = Quaternion.Euler(new Vector3(0, 90f, 0));
+                targetPosition = this.transform.position + new Vector3(1.0f, 0, 0);
+            }
+            else if (playerPosition.position.x - transform.position.x < 0)
+            {
+                // 左向き
+                transform.rotation = Quaternion.Euler(new Vector3(0, 270f, 0));
                 targetPosition = this.transform.position + new Vector3(-1.0f, 0, 0);
             }
-            else
+
+            isMoving = MoveCheck();
+            if(!isMoving)
             {
                 actionCount--;
                 TurnCheck();
@@ -298,13 +329,27 @@ public class Enemy : MonoBehaviour
         isMoving = MoveCheck();
         if (!isMoving)
         {
-            transform.rotation = Quaternion.Euler(new Vector3(0, 270f, 0));
-            isMoving = MoveCheck();
-            if (isMoving)
+            if (playerPosition.position.z - transform.position.z > 0)
             {
+                // 上向き
+                transform.rotation = Quaternion.Euler(new Vector3(0, 0, 0));
+                targetPosition = this.transform.position + new Vector3(0, 0, 1.0f);
+            }
+            else if (playerPosition.position.x - transform.position.x > 0)
+            {
+                // 右向き
+                transform.rotation = Quaternion.Euler(new Vector3(0, 90f, 0));
+                targetPosition = this.transform.position + new Vector3(1.0f, 0, 0);
+            }
+            else if (playerPosition.position.x - transform.position.x <= 0)
+            {
+                // 左向き
+                transform.rotation = Quaternion.Euler(new Vector3(0, 270f, 0));
                 targetPosition = this.transform.position + new Vector3(-1.0f, 0, 0);
             }
-            else
+
+            isMoving = MoveCheck();
+            if (!isMoving)
             {
                 actionCount--;
                 TurnCheck();
@@ -323,13 +368,27 @@ public class Enemy : MonoBehaviour
         isMoving = MoveCheck();
         if (!isMoving)
         {
-            transform.rotation = Quaternion.Euler(new Vector3(0, 180f, 0));
-            isMoving = MoveCheck();
-            if (isMoving)
+            if (playerPosition.position.z - transform.position.z > 0)
             {
+                // 上向き
+                transform.rotation = Quaternion.Euler(new Vector3(0, 0, 0));
+                targetPosition = this.transform.position + new Vector3(0, 0, 1.0f);
+            }
+            else if (playerPosition.position.z - transform.position.z <= 0)
+            {
+                // 下向き
+                transform.rotation = Quaternion.Euler(new Vector3(0, 180f, 0));
                 targetPosition = this.transform.position + new Vector3(0, 0, -1.0f);
             }
-            else
+            else if (playerPosition.position.x - transform.position.x < 0)
+            {
+                // 左向き
+                transform.rotation = Quaternion.Euler(new Vector3(0, 270f, 0));
+                targetPosition = this.transform.position + new Vector3(-1.0f, 0, 0);
+            }
+
+            isMoving = MoveCheck();
+            if (!isMoving)
             {
                 actionCount--;
                 TurnCheck();
@@ -348,13 +407,27 @@ public class Enemy : MonoBehaviour
         isMoving = MoveCheck();
         if (!isMoving)
         {
-            transform.rotation = Quaternion.Euler(new Vector3(0, 180f, 0));
-            isMoving = MoveCheck();
-            if (isMoving)
+            if (playerPosition.position.z - transform.position.z >= 0)
             {
+                // 上向き
+                transform.rotation = Quaternion.Euler(new Vector3(0, 0, 0));
+                targetPosition = this.transform.position + new Vector3(0, 0, 1.0f);
+            }
+            else if (playerPosition.position.z - transform.position.z < 0)
+            {
+                // 下向き
+                transform.rotation = Quaternion.Euler(new Vector3(0, 180f, 0));
                 targetPosition = this.transform.position + new Vector3(0, 0, -1.0f);
             }
-            else
+            else if (playerPosition.position.x - transform.position.x > 0)
+            {
+                // 右向き
+                transform.rotation = Quaternion.Euler(new Vector3(0, 90f, 0));
+                targetPosition = this.transform.position + new Vector3(1.0f, 0, 0);
+            }
+
+            isMoving = MoveCheck();
+            if (!isMoving)
             {
                 actionCount--;
                 TurnCheck();
@@ -413,7 +486,6 @@ public class Enemy : MonoBehaviour
                         dmg = damageScript.EnemyDamage(dmg);
 
                         hp -= dmg;
-                        player.score += dmg;
 
                         isHit = true;
                         delayTime = 0.5f;
@@ -438,7 +510,7 @@ public class Enemy : MonoBehaviour
             isAttackCheckPhese = false;
             attackCheckPheseEnd = true;
             attackTimer = 0;
-            delayTime = 1.5f;
+            delayTime = 2.0f;
         }
     }
 
@@ -505,21 +577,40 @@ public class Enemy : MonoBehaviour
     {
         int playerLv = GameManager.instance.playerlv;
 
-        if (lv < playerLv)
+        if (playerLv > boostflag)
         {
-            hp += playerLv * hpRiseValue;
-            attack += playerLv * attackRiseValue;
-            hprattack += (int)(playerLv * hprattackRiseValue);
+            hp += (playerLv - boostflag) * boostHpRiseValue;
+            attack += (playerLv - boostflag) * boostAttackRiseValue;
+            hprattack += (int)( (playerLv - boostflag) * boostHprattackRiseValue);
+        }
+
+        if (depth > hiLevelflag)
+        {
+            hp += hiLevelhp;
+            attack += hiLevelattack;
+            hprattack += hiLevelhprattack;
+            maxActionCount += hiLevelmaxActionCount;
+            acquiredExp += hiLevelacquiredExp;
         }
 
         if (depth > deepflag)
         {
-            hp += deephp;
-            attack += deepattack;
-            hprattack += deephprattack;
-            maxActionCount += deepmaxActionCount;
+            hp += (depth - deepflag) * deephp;
+            attack += (depth - deepflag) * deepattack;
+            hprattack += (int)((depth - deepflag) * deephprattack);
+        }
 
+        if(depth > deepflag)
+        {
             EnemyName += "★";
+        }
+        else if(depth > hiLevelflag)
+        {
+            EnemyName += "☆";
+        }
+        else if(playerLv > boostflag)
+        {
+            EnemyName += "＋";
         }
     }
 }

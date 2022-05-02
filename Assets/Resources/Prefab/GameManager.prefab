@@ -54,8 +54,8 @@ MonoBehaviour:
   - {fileID: 7909317018809443177, guid: 5533bb0da2477c441bc8283a69f4dd0f, type: 3}
   blockObj:
   - {fileID: 2705267624141806968, guid: fcbceb5b96155844a88ba15ad91d9714, type: 3}
-  - {fileID: 1920070760785092924, guid: bb135cf8a6983c94abef5861ec7db581, type: 3}
-  - {fileID: 6150235346590678467, guid: 5e92bfce2c187cc4794210817c50bc4c, type: 3}
+  - {fileID: 1825825845821138339, guid: bac4141b3e8441045a2d8a8566a25d1a, type: 3}
+  - {fileID: 8976210206947395528, guid: d16bf6c0d0c2ce94896d61c9e406d68a, type: 3}
   - {fileID: 8804742648342386643, guid: 5ff43fd094a89ce48befc3084d248c1a, type: 3}
   itemObj:
   - {fileID: 7511762443650330847, guid: 6c8d9d4af0f807042b2e70bdeed70867, type: 3}
@@ -94,11 +94,11 @@ MonoBehaviour:
   depthImage: {fileID: 0}
   playerlv: 1
   stamina: 100
-  hp: 50
-  maxHP: 50
-  hpr: 5
-  strength: 3
-  magic: 12
+  hp: 10
+  maxHP: 10
+  hpr: 3
+  strength: 2
+  magic: 8
   getExp: 0
   score: 0
   life: 1

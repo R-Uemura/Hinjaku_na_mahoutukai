@@ -23,19 +23,22 @@ public class GameManager : MonoBehaviour
     bool playerTrun = true;
     bool enemyTrun = false;
     int enemycount = 0;
+    public int totalEnemy;
 
     // Plyaerステータス
     public int playerlv = 1;
     public int stamina = 100;
-    public int hp = 100;
-    public int maxHP = 100;
-    public int hpr = 5;
-    public int strength = 3;
-    public int magic = 12;
-    public int getExp = 0;
-    public int score = 0;
+    public int hp = 10;
+    public int maxHP = 10;
+    public int hpr = 3;
+    public int strength = 2;
+    public int magic = 8;
+    public int nextExp = 10;
     public bool life = true;
 
+    public bool newGame = true;
+    public bool nowGame = false;
+    public bool reStart = false;
 
     // Start関数よりも先に呼びされる
     private void Awake()
@@ -72,15 +75,24 @@ public class GameManager : MonoBehaviour
     // プレイヤーがGoalについたときに呼び出されて、マップを自動生成する
     static private void OnSceneLoded(Scene next,LoadSceneMode a)
     {
-        instance.depth++;
-        instance.Initgame();
-
+        if (SceneManager.GetActiveScene().name == "MainGame")
+        {
+            if (instance.reStart)
+            {
+                instance.ReStart();
+                instance.Initgame();
+            }
+            else if (instance.nowGame)
+            {
+                instance.Initgame();
+            }
+        }
     }
 
     // ゲーム準備用の関数
     public void Initgame()
     {
-
+        newGame = false;
         playerTrun = true;
         enemyTrun = false;
 
@@ -158,7 +170,11 @@ public class GameManager : MonoBehaviour
                     uIManager.EnemyNameTextUPdate(enemies[enemycount - 1].EnemyName);
                 }
             }
-            enemies[enemycount - 1].EnemyActionPhase();
+
+            if(enemies[enemycount - 1].isDown == false)
+            {
+                enemies[enemycount - 1].EnemyActionPhase();
+            }
         }
 
     }
@@ -170,7 +186,7 @@ public class GameManager : MonoBehaviour
     }
 
     // ターン切り替え
-    private void TurnChenge()
+    public void TurnChenge()
     {
         enemyTrun = false;
         playerTrun = true;
@@ -186,9 +202,31 @@ public class GameManager : MonoBehaviour
     }
 
     // Playerが倒れた時の処理
-    private void PlayerDown()
+    public void PlayerDown()
     {
-
+        uIManager.SetGameOverCanvas(true);
+        uIManager.ReachDepthTextUpdate(depth);
     }
 
+    // リスタート時にステータスを初期化する
+    private void ReStart()
+    {
+        depth = 1;
+
+        playerTrun = true;
+        enemyTrun = false;
+        enemycount = 0;
+
+        playerlv = 1;
+        stamina = 100;
+        hp = 10;
+        maxHP = 10;
+        hpr = 3;
+        strength = 2;
+        magic = 8;
+        nextExp = 10;
+        life = true;
+
+        reStart = false;
+    }
 }

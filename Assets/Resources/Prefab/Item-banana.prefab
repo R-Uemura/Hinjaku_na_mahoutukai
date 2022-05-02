@@ -58,12 +58,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2e772d5526ce76d40b45b039b75c8536, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  itemName: "\u3070\u306A\u306A"
   stamina: 50
-  maxhp: 2
-  hpr: 4
-  strength: 1
+  maxhp: 0
+  hpr: 1
+  strength: 0
   magic: 0
-  getExp: 5
+  ap: 0
+  charge: 0
 --- !u!95 &7405704613447984674
 Animator:
   serializedVersion: 3

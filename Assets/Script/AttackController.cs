@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Effekseer;
 
 public class AttackController : MonoBehaviour
 {
@@ -8,10 +9,47 @@ public class AttackController : MonoBehaviour
     int damege = 0;
     int hprDamage = 0;
 
+    public GameObject effect;
+    EffekseerEmitter effekseerEmitter;
+    bool nulleffect = true;
+
+    public void Start()
+    {
+        if (effect != null)
+        {
+            nulleffect = false;
+            effekseerEmitter = effect.GetComponent<EffekseerEmitter>();
+        }
+        else
+        {
+            nulleffect = true;
+        }
+    }
+
     public void Damager(int dmg)
     {
         damege = dmg;
         attackflag = true;
+
+        if (!nulleffect)
+        {
+            effekseerEmitter.Play();
+        }
+
+    }
+
+    public void PlayerAttack(int dmg)
+    {
+        damege = dmg;
+        attackflag = true;
+    }
+
+    public void PlayerEffecktPlay()
+    {
+        if (!nulleffect)
+        {
+            effekseerEmitter.Play();
+        }
     }
 
     public void HprDamager(int hprdmg)

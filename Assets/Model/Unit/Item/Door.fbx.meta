@@ -4,8 +4,14 @@ ModelImporter:
   serializedVersion: 21100
   internalIDToNameTable:
   - first:
-      74: 7583080319782976921
-    second: "\u30A2\u30FC\u30DE\u30C1\u30E5\u30A2|Action"
+      74: 3949991821871146525
+    second: "\u30A2\u30FC\u30DE\u30C1\u30E5\u30A2|Action1"
+  - first:
+      74: -2179581698047185158
+    second: "\u30A2\u30FC\u30DE\u30C1\u30E5\u30A2|Action2"
+  - first:
+      74: -8247019196411113761
+    second: "\u30A2\u30FC\u30DE\u30C1\u30E5\u30A2|Action3"
   externalObjects: {}
   materials:
     materialImportMode: 2
@@ -35,8 +41,8 @@ ModelImporter:
     extraUserProperties: []
     clipAnimations:
     - serializedVersion: 16
-      name: "\u30A2\u30FC\u30DE\u30C1\u30E5\u30A2|Action"
-      takeName: "\u30A2\u30FC\u30DE\u30C1\u30E5\u30A2|Action"
+      name: "\u30A2\u30FC\u30DE\u30C1\u30E5\u30A2|Action1"
+      takeName: "\u30A2\u30FC\u30DE\u30C1\u30E5\u30A2|Action1"
       internalID: 0
       firstFrame: 0
       lastFrame: 30
@@ -47,6 +53,64 @@ ModelImporter:
       loop: 0
       hasAdditiveReferencePose: 0
       loopTime: 1
+      loopBlend: 0
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask: []
+      maskType: 3
+      maskSource: {instanceID: 0}
+      additiveReferencePoseFrame: 0
+    - serializedVersion: 16
+      name: "\u30A2\u30FC\u30DE\u30C1\u30E5\u30A2|Action2"
+      takeName: "\u30A2\u30FC\u30DE\u30C1\u30E5\u30A2|Action2"
+      internalID: 0
+      firstFrame: 0
+      lastFrame: 30
+      wrapMode: 0
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
+      loop: 0
+      hasAdditiveReferencePose: 0
+      loopTime: 0
+      loopBlend: 0
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask: []
+      maskType: 3
+      maskSource: {instanceID: 0}
+      additiveReferencePoseFrame: 0
+    - serializedVersion: 16
+      name: "\u30A2\u30FC\u30DE\u30C1\u30E5\u30A2|Action3"
+      takeName: "\u30A2\u30FC\u30DE\u30C1\u30E5\u30A2|Action3"
+      internalID: 0
+      firstFrame: 0
+      lastFrame: 30
+      wrapMode: 0
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
+      loop: 0
+      hasAdditiveReferencePose: 0
+      loopTime: 0
       loopBlend: 0
       loopBlendOrientation: 0
       loopBlendPositionY: 0
@@ -83,7 +147,7 @@ ModelImporter:
     weldVertices: 1
     bakeAxisConversion: 0
     preserveHierarchy: 0
-    skinWeightsMode: 0
+    skinWeightsMode: 1
     maxBonesPerVertex: 4
     minBoneWeight: 0.001
     meshOptimizationFlags: -1
@@ -118,7 +182,7 @@ ModelImporter:
     legStretch: 0.05
     feetSpacing: 0
     globalScale: 1
-    rootMotionBoneName: 
+    rootMotionBoneName: "\u30A2\u30FC\u30DE\u30C1\u30E5\u30A2"
     hasTranslationDoF: 0
     hasExtraRoot: 0
     skeletonHasParents: 1
@@ -126,7 +190,7 @@ ModelImporter:
   autoGenerateAvatarMappingIfUnspecified: 1
   animationType: 2
   humanoidOversampling: 1
-  avatarSetup: 0
+  avatarSetup: 1
   addHumanoidExtraRootOnlyWhenUsingAvatar: 1
   additionalBone: 0
   userData: 
